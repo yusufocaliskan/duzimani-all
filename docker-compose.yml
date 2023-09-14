@@ -1,0 +1,55 @@
+version: "3.2"
+services:
+  #Database
+  duzimani-mongo:
+    image: mongo:latest
+    container_name: duzimani-mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-data:/data/db
+
+  #Backend API's Server
+  duzimani-backend:
+    container_name: duzimani-backend
+    restart: always
+    volumes:
+      - ./backend/:/app
+      - ./backend/node_modules:/app/node_modules
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - duzimani-mongo
+
+  #User Frontend
+  # duzimani-frontend:
+  #   container_name: duzimani-frontend
+  #   restart: always
+  #   volumes:
+  #     - ./frontend/:/app
+  #     - ./frontend/node_modules:/app/node_modules
+
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 3001:3001
+
+  #Admin
+  duzimani-admin-frontend:
+    container_name: duzimani-admin-frontend
+    restart: always
+    volumes:
+      - ./admin-frontend/:/app
+      - ./admin-frontend/node_modules:/app/node_modules
+    build:
+      context: ./admin-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3002:3002
+
+volumes:
+  mongo_data:
